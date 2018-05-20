@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 
 const app = express();
 const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 
 app.set('views', __dirname + '/views');
@@ -23,15 +24,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRouter);
-//app.use('/users', usersRouter);
-/*
-app.get('/', function(req, res){
-    res.send('<h1>Hello world 123</h1>');
-});
-*/
+app.use('/users', usersRouter);
 
 http.listen(3000, function(){
     console.log('listening on *:3000');
+});
+
+io.on('connection', function(socket){
+    console.log('a user connected');
 });
 
 module.exports = app;
