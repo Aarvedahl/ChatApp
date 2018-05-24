@@ -14,10 +14,13 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script>
         $(function () {
             var socket = io();
             $('form').submit(function(){
+                console.log("Jey there")
+                console.log($('#nickname'))
                 socket.emit('chat message', $('#m').val());
                 $('#m').val('');
                 return false;
@@ -29,9 +32,22 @@
     </script>
 </head>
 <body>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+        $scope.nickname = "User1";
+    });
+</script>
+
+<div ng-app="myApp" ng-controller="myCtrl">
+    <h1>Chat Application</h1>
+    Name: <input ng-model="nickname">
+    <h1  id="nickname">{{nickname}}</h1>
+</div>
 <ul id="messages"></ul>
 <form action="">
     <input id="m" autocomplete="off" /><button>Send</button>
 </form>
+<script src=""></script>
 </body>
 </html>
