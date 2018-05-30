@@ -19,7 +19,6 @@
         $(function () {
             var socket = io();
             $('form').submit(function(){
-                console.log($('#nickname'))
                 socket.emit('chat message', $('#m').val());
                 $('#m').val('');
                 return false;
@@ -28,14 +27,25 @@
                 $('#messages').append($('<li>').text(msg));
             });
         });
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $scope.nickname = "User1";
+            sendMessage();
+            $scope.messages = [];
+
+            function sendMessage() {
+                var socket = io();
+                socket.on('chat message', function (msg) {
+                    $scope.messages.push(msg);
+                    console.log($scope.messages)
+                });
+            }
+        })
     </script>
 </head>
 <body>
 <script>
-    var app = angular.module('myApp', []);
-    app.controller('myCtrl', function($scope) {
-        $scope.nickname = "User1";
-    });
+
 </script>
 
 <div ng-app="myApp" ng-controller="myCtrl">
@@ -43,6 +53,10 @@
     Name: <input ng-model="nickname">
     <h1 id="nickname">{{nickname}}</h1>
     <ul ng-model="messages" id="messages"></ul>
+
+    <ul>is this visible {{messages.length}}
+        <li ng-repeat="a in messages track by $index">{{a}}</li>
+    </ul>
     <form action="">
         <input ng-model="chatmessage" id="m" autocomplete="off" /><button>Send</button>
     </form>
