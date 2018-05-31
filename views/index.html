@@ -5,9 +5,9 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font: 13px Helvetica, Arial; }
-        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #msgForm { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        #msgForm input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        #msgForm button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
         #messages li:nth-child(odd) { background: #eee; }
@@ -18,11 +18,11 @@
     <script>
         $(function () {
             var socket = io();
-            $('form').submit(function(){
+            /*$('form').submit(function(){
                 socket.emit('chat message', $('#m').val());
                 $('#m').val('');
                 return false;
-            });
+            }); */
             socket.on('chat message', function(msg){
                 $('#messages').append($('<li>').text(msg));
             });
@@ -30,16 +30,21 @@
         var app = angular.module('myApp', []);
         app.controller('myCtrl', function($scope) {
             $scope.nickname = "User1";
-            sendMessage();
+            receiveMessage();
             $scope.messages = [];
 
-            function sendMessage() {
+            
+            function receiveMessage() {
                 var socket = io();
                 socket.on('chat message', function (msg) {
                     $scope.messages.push(msg);
-                    console.log($scope.messages)
                 });
+                $scope.sendMessage = function () {
+                    socket.emit('chat message', $scope.chatmessage);
+                    $scope.chatmessage = "";
+                };
             }
+
         })
     </script>
 </head>
@@ -52,15 +57,16 @@
     <h1>Chat Application</h1>
     Name: <input ng-model="nickname">
     <h1 id="nickname">{{nickname}}</h1>
-    <ul ng-model="messages" id="messages"></ul>
 
-    <ul>is this visible {{messages.length}}
-        <li ng-repeat="a in messages track by $index">{{a}}</li>
+    <ul id="messages">
+        <li ng-repeat="msg in messages track by $index">{{msg}}</li>
     </ul>
-    <form action="">
-        <input ng-model="chatmessage" id="m" autocomplete="off" /><button>Send</button>
+
+    <form id="msgForm" ng-submit="sendMessage()">
+        <input ng-model="chatmessage" />
+        <button type="submit">Send</button>
     </form>
 </div>
-<script src=""></script>
+
 </body>
 </html>
