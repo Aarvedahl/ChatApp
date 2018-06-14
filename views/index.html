@@ -33,7 +33,7 @@
             receiveMessage();
             $scope.messages = [];
 
-            
+
             function receiveMessage() {
                 var socket = io();
                 socket.on('chat message', function (msg) {
