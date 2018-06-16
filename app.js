@@ -31,14 +31,24 @@ http.listen(3000, function(){
 
 io.on('connection', function(socket){
     console.log('user connected');
+    io.emit('chat message', "A user has connected");
     socket.on('chat message', function(msg){
         io.emit('chat message', msg);
     });
     socket.on('disconnect', function () {
         console.log('user disconnected');
+        io.emit('chat message', "A user has disconnected");
     });
 });
 
 
 module.exports = app;
+
+// TODO
+/*
+Don’t send the same message to the user that sent it himself. Instead, append the message directly as soon as he presses enter.
+Add “{user} is typing” functionality
+Show who’s online
+Add private messaging
+ */
 
